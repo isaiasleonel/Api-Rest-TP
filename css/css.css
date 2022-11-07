@@ -1,0 +1,135 @@
+:root {
+  --main-color: #ffffff;
+  --secondary-color: #30e620;
+  --tertiary-color: #4675b9;
+  --highlight-color: #30e620fd;
+  --button-color: #e6c220;
+  --body: #78787845;
+  --color-gray: #737373;
+}
+
+body {
+  background-color: var(--body);
+}
+/* -------------------- NAVBAR -------------------- */
+.navbar {
+  --bs-navbar-padding-y: 0rem;
+}
+
+.navbar .container-fluid {
+  --bs-gutter-x: 0rem;
+  background-color: var(--highlight-color);
+}
+
+.navbar .container-fluid svg {
+  width: 1.5em;
+  height: 1.5em;
+  fill: white;
+}
+
+.navbar-collapse {
+  background-color: #38af01bd;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.navbar-nav {
+  column-gap: 3rem;
+}
+
+.navbar-nav a {
+  color: white;
+  font-weight: bold;
+}
+
+/* -------------------- BUTTON -------------------- */
+
+:not(.btn-check) + .btn:active {
+  color: var(--main-color);
+  background-color: #6ac82d;
+  border-color: var(--button-color);
+}
+.btn-outline-success {
+  color: var(--main-color);
+}
+/* -------------------- CARD -------------------- */
+.card-text {
+  color: var(--tertiary-color);
+  font-size: 1.6rem;
+}
+
+.card__img {
+  height: 142px;
+  object-fit: contain;
+}
+
+/* -------------------- TABLE -------------------- */
+.btn-primary {
+  background-color: var(--tertiary-color);
+}
+
+/* ----------------------Footer--------------------------------- */
+.site-footer {
+  background-color: #26272b;
+  padding: 45px 0 20px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--color-gray);
+}
+.site-footer hr {
+  border-top-color: #bbb;
+  opacity: 0.5;
+}
+.site-footer hr.small {
+  margin: 20px 0;
+}
+.site-footer h6 {
+  color: #fff;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
+.site-footer a {
+  color: var(--color-gray);
+}
+.site-footer a:hover {
+  color: #3366cc;
+  text-decoration: none;
+}
+.footer-links {
+  padding-left: 0;
+  list-style: none;
+}
+.footer-links li {
+  display: block;
+}
+.footer-links a {
+  color: var(--color-gray);
+}
+.footer-links a:active,
+.footer-links a:focus,
+.footer-links a:hover {
+  color: #3366cc;
+  text-decoration: none;
+}
+.footer-links.inline li {
+  display: inline-block;
+}
+
+@media (max-width: 991px) {
+  .site-footer [class^="col-"] {
+    margin-bottom: 30px;
+  }
+}
+/* ----------------------login----------------------- */
+.formConteiner-login {
+  height: 75vh;
+  min-height: 20em;
+  margin: 3rem auto;
+}
+/* ----------------------marca ----------------------- */
+
+.cards-sponsor .card-img-top {
+  object-fit: contain;
+}
