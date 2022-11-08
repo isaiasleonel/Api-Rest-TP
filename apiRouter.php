@@ -2,7 +2,7 @@
 
 require_once './libs/Router.php';
 require_once './api-app/api-controller/api.controllerProducto.php';
-require_once './api-app/api-controller/api.controllerCategoria.php';
+require_once './api-app/api-controller/api.UserController.php';
 
 
 // crea el router
@@ -16,13 +16,10 @@ $router->addRoute('productos', 'POST', 'ProductoApiController', 'insertProducto'
 $router->addRoute('productos/:ID', 'PUT', 'ProductoApiController', 'updateProducto');
 // Categorias
 $router->addRoute('categorias', 'GET', 'CategoriaApiController', 'getCategorias');
-$router->addRoute('categorias/:ID', 'GET', 'CategoriaApiController', 'getCategoria');
-$router->addRoute('categorias/:ID', 'DELETE', 'CategoriaApiController', 'deleteCategoria');
-$router->addRoute('categorias', 'POST', 'CategoriaApiController', 'insertCategoria');
-$router->addRoute('categorias/:ID', 'PUT', 'CategoriaApiController', 'updateCategoria');
 
 
-
+//Token
+$router->addRoute("auth/token", 'GET', 'AuthApiController', 'getToken');
 
 // ejecuta la ruta (sea cual sea)
 $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);
