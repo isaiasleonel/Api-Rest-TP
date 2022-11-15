@@ -1,8 +1,8 @@
 <?php
 
-require_once './app/Models/producto.model.php';
-require_once './app/Models/marca.model.php';
-require_once './app/Models/categoria.model.php';
+require_once './api-app/api-model/producto.model.php';
+require_once './api-app/api-model/marca.model.php';
+require_once './api-app/api-model/categoria.model.php';
 require_once './api-app/api-view/api.view.php';
 require_once './api-app/ApiHelper/auth.ApiHelper.php';
 
@@ -32,7 +32,6 @@ class ProductoApiController
         return json_decode($this->data);
     }
 
-
     /**
      * 
      * Obtengo base dato de la tabla producto y lo muestro al view
@@ -40,40 +39,60 @@ class ProductoApiController
      */
     public function getProductos($params = null)
     {
-        $sortByDefault = "id_producto";
-        $orderDefault = "asc";
-        $division_pages = 10;
-        $page = 1;
-        $array = array("id_producto", "precio", "nombre", "imagen", "marca_fk", "categoria_fk");
+        try {
+            // Por defecto
+            $sortByDefault = "id_producto";
+            $orderDefault = "asc";
+            $division_pages = 10;
+            $page = 1;
+            $array = array("id_producto", "precio", "nombre", "imagen", "marca_fk", "categoria_fk");
 
-        // condicion para Page
-        if (isset($_GET["page"])) {
-            $page = $this->convert($_GET["page"], $page);
+            // Condicion para Page -> convertie valor ingresado a Number
+            if (isset($_GET["page"])) {
+                $page = $this->convert($_GET["page"], $page);
+            }
+
+            // Por Defecto
+            $principle = ($page - 1) * $division_pages;
+
+            // ordenamiento 
+            if (!empty($_GET["sortby"]) && !empty($_GET["order"])) {
+                $datos = $this->model->getDbProyCat($principle, $division_pages, $_GET["sortby"], $_GET["order"]);
+            }
+            // Si no mandan parametros para ORDER por defecto lanzara "ASC"
+            else if (!empty($_GET["sortby"]) && (array_key_exists($_GET["sortby"], $array))) {
+                $datos = $this->model->getDbProyCat($principle, $division_pages, $_GET["sortby"], $orderDefault);
+            }
+            // Si no mandan parametros para SORTBY por defecto mandara el "id_producto" para ordenarlo 
+            else if (!empty($_GET["order"])) {
+                $datos = $this->model->getDbProyCat($principle, $division_pages, $sortByDefault, $_GET["order"]);
+            }
+
+            // Condicion para filtrar
+            else if (!empty($_GET["column"]) && !empty($_GET["value"])) {
+                $column = $_GET["column"];
+                $value = $_GET["value"];
+                $datos = $this->model->filterFields($column, $value);
+            }
+            // Por defecto manda la paginacion de productos del " 1 al 10"
+            else {
+                $datos = $this->model->getDbProyCat($principle, $division_pages);
+            }
+            $this->view->response($datos, 200);
+        } catch (Exception) {
+            $this->view->response("No se encontro", 404);
         }
-        $principle = ($page - 1) * $division_pages;
-
-        // ordenamiento 
-        if (!empty($_GET["sortby"]) && !empty($_GET["order"])) {
-            $datos = $this->model->getDbProyCat($principle, $division_pages, $_GET["sortby"], $_GET["order"]);
-        } else if (!empty($_GET["sortby"]) && (array_key_exists($_GET["sortby"], $array))) {
-            $datos = $this->model->getDbProyCat($principle, $division_pages, $_GET["sortby"], $orderDefault);
-        } else if (!empty($_GET["order"])) {
-            $datos = $this->model->getDbProyCat($principle, $division_pages, $sortByDefault, $_GET["order"]);
-        }
-
-        // condicion para filtrar
-        else if (!empty($_GET["column"]) && !empty($_GET["value"])) {
-            $column = $_GET["column"];
-            $value = $_GET["value"];
-            $datos = $this->model->filterFields($column, $value);
-        } else {
-            $datos = $this->model->getDbProyCat($principle, $division_pages);
-        }
-
-        $this->view->response($datos, 200);
     }
 
-    //  Convertimos todo numero a numero natural
+
+    //Default Router
+    public function defaultRouter()
+    {
+        $this->view->response("Not Found", 404);
+    }
+
+
+    //  Convertimos todo numero a numero entero
     public function Convert($param, $defaultParam)
     {
         $result = intval($param);
@@ -127,14 +146,13 @@ class ProductoApiController
             $this->view->response("Complete los datos", 400);
         } else {
 
-
-            //pedir permiso a tabla  marca
-            $categoria = $this->dataCategoria->getCategoriaFK($producto->categoria_fk);
+            $marcaFK = $this->dataMarca->marcaFK($producto->marca_fk);
+            $categoriaFK = $this->dataCategoria->getCategoriaFK($producto->categoria_fk);
             $id = $this->model->insertarProductos(
                 $producto->precio,
                 $producto->nombre,
-                $categoria->id,
-                $producto->marca_fk,
+                $categoriaFK->id,
+                $marcaFK->id,
                 $producto->imagen
             );
 
@@ -150,6 +168,12 @@ class ProductoApiController
      */
     public function deleteProducto($params = null)
     {
+        // Solo si es ADM puede eliminar
+        if (!$this->authHelper->isLoggedIn()) {
+            $this->view->response("No estas logeado", 401);
+            return;
+        }
+
         $id = $params[':ID'];
 
         $producto = $this->model->getProducto($id);
@@ -177,12 +201,18 @@ class ProductoApiController
         }
 
         if ($producto) {
+            // Obtengo jsn si existe el ID
             $body = $this->getData();
 
+            // peticion  de FK a las otra tablas 
+            $marcaFK = $this->dataMarca->marcaFK($body->marca_fk);
+            $categoriaFK = $this->dataCategoria->getCategoriaFK($body->categoria_fk);
+
+            //json por id
             $precio = $body->precio;
             $nombre = $body->nombre;
-            $categoria = $body->categoria_fk;
-            $marca = $body->marca_fk;
+            $categoria = $categoriaFK->id;
+            $marca = $marcaFK->id;
             $imagen = $body->imagen;
 
             $producto = $this->model->editarProductos($precio, $nombre, $categoria, $marca, $imagen, $id);

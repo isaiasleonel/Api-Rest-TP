@@ -16,10 +16,10 @@ $router->addRoute('productos', 'POST', 'ProductoApiController', 'insertProducto'
 $router->addRoute('productos/:ID', 'PUT', 'ProductoApiController', 'updateProducto');
 // Categorias
 $router->addRoute('categorias', 'GET', 'CategoriaApiController', 'getCategorias');
-
-
 //Token
 $router->addRoute("auth/token", 'GET', 'AuthApiController', 'getToken');
 
+//not Found
+$router->setDefaultRoute('ProductoApiController', 'defaultRouter');
 // ejecuta la ruta (sea cual sea)
 $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);

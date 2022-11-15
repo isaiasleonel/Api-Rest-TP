@@ -41,31 +41,6 @@ class productoModel
         return $producto;
     }
 
-    //---------------Base dato de la tabla Producto / ordenar------------
-    function getDbProduct($id)
-    {
-        $query = $this->db->prepare('SELECT  producto.id_producto, producto.precio , producto.nombre, producto.categoria_fk, producto.imagen , marca.marca_fk , categoria.categoria_fk FROM producto  INNER JOIN marca ON producto.marca_fk = marca.id INNER JOIN categoria ON producto.categoria_fk= categoria.id WHERE producto.categoria_fk = ?');
-        $query->execute([$id]);
-        $productos = $query->fetchAll(PDO::FETCH_OBJ);
-        return $productos;
-    }
-
-
-    function getDbProdEditar($id)
-    {
-        $query = $this->db->prepare('SELECT  producto.id_producto, producto.precio , producto.nombre, producto.imagen , marca.marca_fk , categoria.categoria_fk FROM producto  INNER JOIN marca ON producto.marca_fk = marca.id INNER JOIN categoria ON producto.categoria_fk= categoria.id WHERE producto.id_producto = ?');
-        $query->execute([$id]);
-        $productos = $query->fetch(PDO::FETCH_OBJ);
-        return $productos;
-    }
-
-    function getDbProdDescripcion($id)
-    {
-        $query = $this->db->prepare('SELECT  producto.id_producto, producto.precio , producto.nombre, producto.imagen , marca.marca_fk , categoria.categoria_fk FROM producto  INNER JOIN marca ON producto.marca_fk = marca.id INNER JOIN categoria ON producto.categoria_fk= categoria.id WHERE producto.id_producto = ?');
-        $query->execute([$id]);
-        $productos = $query->fetchAll(PDO::FETCH_OBJ);
-        return $productos;
-    }
 
 
     // Inserta los valores metido en el FORM a la base de dato producto
@@ -84,34 +59,10 @@ class productoModel
     }
 
 
-
-
     // Elimina una tarea dado su id.
     function deleteProductoById($id)
     {
         $query = $this->db->prepare('DELETE FROM producto WHERE id_producto = ?');
         $query->execute([$id]);
     }
-
-    // Agregar imagen
-    private function uploadImage($image)
-    {
-        $target = 'img/' . uniqid() . '.jpg';
-        move_uploaded_file($image, $target);
-        return $target;
-    }
 }
-
-
-
-
-
-
-
-
-    // PAra hacer inner join con 3 tablas
-    // SELECT  producto.id_producto, producto.precio , producto.nombre, producto.imagen , marca.marca_fk , categoria.categoria_fk FROM producto  INNER JOIN marca ON producto.marca_fk = marca.id INNER JOIN categoria ON producto.categoria_fk= categoria.id;'
-
-
-    //Para el buscador de google 
-    //SELECT * FROM producto WHERE nombre LIKE 'G%';

@@ -18,4 +18,12 @@ class marcaModel
         $marca = $query->fetchAll(PDO::FETCH_OBJ);
         return $marca;
     }
+
+    public function marcaFK($fk)
+    {
+        $query = $this->db->prepare('SELECT marca.id FROM marca WHERE marca_fk= ?');
+        $query->execute([$fk]);
+        $marcaFK = $query->fetch(PDO::FETCH_OBJ);
+        return $marcaFK;
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-require_once './app/Models/producto.model.php';
+require_once './api-app/api-model/user.model.php';
 require_once './api-app/api-view/api.view.php';
 require_once './api-app/ApiHelper/auth.ApiHelper.php';
 
@@ -12,7 +12,7 @@ function base64url_encode($data)
 
 class AuthApiController
 {
-    private $model;
+    private $userModel;
     private $view;
     private $authHelper;
 
@@ -22,6 +22,7 @@ class AuthApiController
         //$this->model = new TaskModel();
         $this->view = new ApiView();
         $this->authHelper = new AuthApiHelper();
+        $this->userModel = new UserModel();
     }
 
 
@@ -45,15 +46,20 @@ class AuthApiController
         $userpass = explode(":", $userpass);
         $user = $userpass[0];
         $pass = $userpass[1];
-        if ($user == "Leo" && $pass == "api") {
+
+        // Obtiene el user de la tabla de usuario
+        $email = $this->userModel->getUserByEmail($user);
+
+        //Verificamos 
+        if ($user == $email->email && password_verify($pass, $email->contrasenia)) {
             //  crear un token
             $header = array(
                 'alg' => 'HS256',
                 'typ' => 'JWT'
             );
             $payload = array(
-                'id' => 1,
-                'name' => "Leo",
+                'id' => $email->id_user,
+                'name' => $email->nombre,
                 'exp' => time() + 3600
             );
             $header = base64url_encode(json_encode($header));
