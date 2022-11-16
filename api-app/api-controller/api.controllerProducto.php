@@ -138,7 +138,7 @@ class ProductoApiController
             return;
         }
 
-        //condicion
+        //condicion si no llegara a completar los campos
         if (
             empty($producto->precio) || empty($producto->nombre) || empty($producto->categoria_fk)
             || empty($producto->marca_fk)

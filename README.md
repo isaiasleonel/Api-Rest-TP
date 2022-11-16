@@ -32,14 +32,73 @@ Para obtener todo el Json
   GET http://localhost/TP-Api/api/productos/2
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `number` | **Required**. Id of item to fetch |
+| Parameter | Type     |
+| :-------- | :------- |
+| `id`      | `number` |
 
 ## Paginacion
 
-Se debera ingresar los parametros
-<br>
+Se debera ingresar los parametros y por defecto mostrara 10 productos.
+
+```http
+  GET http://localhost/TP-Api/api/productos?page=2
+```
+
+| Parameter | Type     | Description   |
+| :-------- | :------- | :------------ |
+| `page`    | `number` | ?page= numero |
+
+## Filtrar
+
+Se debera ingresa 2 parametros:
+
+column -> colocamos el nombre de la columna
+
+value -> colocamos el nombre o numero a buscar de la columna seleccionada
+
+| Parameter | Type     | Description                     |
+| :-------- | :------- | :------------------------------ |
+| `column`  | `string` | column = "nombre de la columna" |
+
+| Parameter | Type               | Description                        |
+| :-------- | :----------------- | :--------------------------------- |
+| `value`   | `string or number` | value = "nombre o numero a buscar" |
+
+Quedando la url de esta forma :
+
+```http
+  GET http://localhost/TP-Api/api/productos?column=id_producto&value=2
+
+```
+
+## Ordenar
+
+Colocamos 2 parametros :
+
+sortby -> colocamos el nombre de la columna a ordenar
+
+order -> "asc" ascendente o "desc" descendente
+
+| Parameter | Type     | Description                   |
+| :-------- | :------- | :---------------------------- |
+| `sortby`  | `string` | sortby="nombre de la columna" |
+
+| Parameter | Type      | Description          |
+| :-------- | :-------- | :------------------- |
+| `order`   | `string ` | order = "asc o desc" |
+
+Quedando de la siguiente forma :
+
+```http
+  GET http://localhost/TP-Api/api/productos?sortby=nombre&order=asc
+
+```
+
+_Detalle de esta URL : Si se ingresa un parametro lanzara por defecto :_
+
+- Si solo se agrega el sortby lo pondra al orden en "asc".
+
+- Si solo se agrega el order , entonces el sortby eligira la columna id_producto para su ordenamiento.
 
 ## METODO POST
 
@@ -61,10 +120,6 @@ Antes que nada debera loguearse([cuenta de prueba](##Login)) para este metodo, a
   "categoria_fk": "Placa de Video"
 }
 ```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `number` | **Required**. Id of item to fetch |
 
 ## Detalles
 
@@ -88,7 +143,6 @@ La categoria_fk tambien es una clave foranea se debera elegir de esta listas col
 | :-- | :------------------- |
 | 1   | Procesador           |
 | 2   | Placa de Video       |
-| 12  | Memoria RAM          |
 
 ## METODO PUT
 
@@ -111,11 +165,11 @@ Tambien debera loguearse([cuenta de prueba](##Login)) para este metodo, asi pode
 }
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `number` | **Required**. Id of item to fetch |
+| Parameter | Type     | Description           |
+| :-------- | :------- | :-------------------- |
+| `id`      | `number` | **Se requiere el Id** |
 
-### ⚠ A tener en cuanta las claves foraneas que van segun [este listado](##Detalles).
+### ⚠ A tener en cuanta las claves foraneas que van segun [listado de la seccion Detalles](##Detalles).
 
 ## METODO DELETE
 
