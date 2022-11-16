@@ -51,7 +51,7 @@ class AuthApiController
         $email = $this->userModel->getUserByEmail($user);
 
         //Verificamos 
-        if ($user == $email->email && password_verify($pass, $email->contrasenia)) {
+        if ($email && $email->email == $user  && password_verify($pass, $email->contrasenia)) {
             //  crear un token
             $header = array(
                 'alg' => 'HS256',
