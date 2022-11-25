@@ -146,15 +146,30 @@ class ProductoApiController
             $this->view->response("Complete los datos", 400);
         } else {
 
-            $marcaFK = $this->dataMarca->marcaFK($producto->marca_fk);
-            $categoriaFK = $this->dataCategoria->getCategoriaFK($producto->categoria_fk);
-            $id = $this->model->insertarProductos(
-                $producto->precio,
-                $producto->nombre,
-                $categoriaFK->id,
-                $marcaFK->id,
-                $producto->imagen
-            );
+
+            //condicion 
+            if (is_numeric($producto->categoria_fk)  || is_numeric($producto->marca_fk)) {
+
+                var_dump($producto);
+                $id = $this->model->insertarProductos(
+                    $producto->precio,
+                    $producto->nombre,
+                    $producto->categoria_fk,
+                    $producto->marca_fk,
+                    $producto->imagen
+                );
+            } else {
+                $marcaFK = $this->dataMarca->marcaFK($producto->marca_fk);
+                $categoriaFK = $this->dataCategoria->getCategoriaFK($producto->categoria_fk);
+
+                $id = $this->model->insertarProductos(
+                    $producto->precio,
+                    $producto->nombre,
+                    $categoriaFK->id,
+                    $marcaFK->id,
+                    $producto->imagen
+                );
+            }
 
             $this->view->response("La tarea se insertó con éxito con el id=$id", 201);
         }
